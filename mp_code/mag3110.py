@@ -7,6 +7,7 @@ I2C_FREQ = 400000
 MAG_ADDRESS = 0x0E
 
 DR_STATUS = 0x00
+
 OUT_X_MSB = 0x01
 OUT_X_LSB = 0x02
 OUT_Y_MSB = 0x03
@@ -16,12 +17,19 @@ OUT_Z_LSB = 0x06
 
 WHO_AM_I = 0x07
 SYSMOD = 0x08
+
 OFF_X_MSB = 0x09
 OFF_X_LSB = 0x0A
 OFF_Y_MSB = 0x0B
 OFF_Y_LSB = 0x0C
 OFF_Z_MSB = 0x0D
 OFF_Z_LSB = 0x0E
+
 DIE_TEMP = 0x0F
+
 CTRL_REG1 = 0x10
 CTRL_REG2 = 0x11
+
+# SYS MODES: 
+sys_mode_binary = ["0", "1", "10"]
+sys_mode_descriptions = ["STANDBY mode", "ACTIVE MODE, RAW data", "ACTIVE MODE, non-RAW user-corrected data"]

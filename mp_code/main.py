@@ -26,18 +26,23 @@ def hexToInt(rawHex):
 def readI2cAddress(registerAddress, onlyDecimal = True, magAddress = mag3110.MAG_ADDRESS, numBytes = 1):
     return formatHex(i2c.readfrom_mem(magAddress, registerAddress, numBytes), onlyDecimal)
 
+def getCurrentMode():
+    currentModeBinary = str(hexToBinary(readI2cAddress(mag3110.SYSMOD, False)))
+    currentModeIndex = mag3110.sys_mode_binary.index(currentModeBinary)
+    return mag3110.sys_mode_descriptions[currentModeIndex]
+
 # INITIALIZATION
 printDividers()
 
+# TESTING
 data = readI2cAddress(mag3110.WHO_AM_I, False)
-# DATA GATHERING
-print("I2C RAW OUTPUT : ")
-print(data)
 
-print("CONVERT HEX TO DECIMAL : ")
-print(hexToInt(data))
+print("I2C RAW OUTPUT: ", data)
 
-print('CONVERT HEX TO BINARY : ')
-print(hexToBinary(data))
+print("CONVERT HEX TO DECIMAL: ", hexToInt(data))
+
+print("CONVERT HEX TO BINARY: ", hexToBinary(data))
+
+print("CURRENT MODE: ", getCurrentMode())
 
 printDividers()
