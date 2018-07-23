@@ -9,14 +9,16 @@
   },
   "ignore": {
     "extensions": [
-      ".micropythonrc"
+      ".micropythonrc",
+      ".DS_Store",
+      ".json"
     ],
     "directories": [
       ".vscode"
     ]
   },
   "tools": {
-    "ampy": "/Library/Frameworks/Python.framework/Versions/3.7/bin/ampy",
-    "rshell": "/Library/Frameworks/Python.framework/Versions/3.7/bin/rshell"
+    "ampy": "/Library/Frameworks/Python.framework/Versions/3.6/bin/ampy",
+    "rshell": "/Library/Frameworks/Python.framework/Versions/3.6/bin/rshell"
   }
 }
