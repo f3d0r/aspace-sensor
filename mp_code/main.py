@@ -23,11 +23,11 @@ def hexToBinary(rawHex):
 def hexToInt(rawHex):
     return int(data, 16)
 
-def readI2cAddress(registerAddress, onlyDecimal = True, magAddress = mag3110.MAG_ADDRESS, numBytes = 1):
+def readI2cAddress(registerAddress, onlyDecimal = False, magAddress = mag3110.MAG_ADDRESS, numBytes = 1):
     return formatHex(i2c.readfrom_mem(magAddress, registerAddress, numBytes), onlyDecimal)
 
 def getCurrentMode():
-    currentModeBinary = str(hexToBinary(readI2cAddress(mag3110.SYSMOD, False)))
+    currentModeBinary = str(hexToBinary(readI2cAddress(mag3110.SYSMOD)))
     currentModeIndex = mag3110.sys_mode_binary.index(currentModeBinary)
     return mag3110.sys_mode_descriptions[currentModeIndex]
 
@@ -35,7 +35,7 @@ def getCurrentMode():
 printDividers()
 
 # TESTING
-data = readI2cAddress(mag3110.WHO_AM_I, False)
+data = readI2cAddress(mag3110.WHO_AM_I)
 
 print("I2C RAW OUTPUT: ", data)
 
