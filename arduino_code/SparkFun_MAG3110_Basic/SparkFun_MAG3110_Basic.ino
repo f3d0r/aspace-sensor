@@ -43,13 +43,13 @@ void loop() {
     //Read the data
     mag.readMag(&x, &y, &z);
   
-    Serial.print("X: ");
+    Serial.print("");
     Serial.print(x);
-    Serial.print(", Y: ");
+    Serial.print(" ");
     Serial.print(y);
-    Serial.print(", Z: ");
+    Serial.print(" ");
     Serial.println(z);
-  
-    Serial.println("--------");
+    
+    delay(100);
   }
 }

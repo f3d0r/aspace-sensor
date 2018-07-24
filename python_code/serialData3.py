@@ -1,38 +1,36 @@
 import serial
 import datetime
 import csv
-ser = serial.Serial('/dev/cu.usbmodem1461', 9600)
+from time import sleep
+import keyboard
+import sys
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 
+current_state = "0"
+f = open('human.csv','a')
+f.write("\n")
+f.write("\n")
+f.write("\n")
+f.write("\n")
 
-
-while (1):
+while (not keyboard.is_pressed('c')):
     serial_line = ser.readline()
-    #print(serial_line) # If using Python 2.x use: print serial_line
-    # Do some other work on the data
 
-    # sleep 5 minutes
+    a = (ser.readline().decode("utf-8")).strip()
 
-    # Loop restarts once the sleep is finished
-##    f = open('example.csv','wl')
-##    f.write()
-##    f.close()
-    a = (ser.readline().decode("utf-8"))
-    rup = datetime.datetime.now().strftime('%m-%d %H:%M:%S')
-    #print (rup)
-    a = rup + ','+ a
-    #print (a)
-    print (a.split(','))
-    
-    myData = a  
-    #with myFile:  
-        #writer = csv.writer(myFile)
-        #writer.writerows(myData)
-    myFile = open('hoolibeb2.csv', 'a')
-    with myFile:
-        myFile.write(myData)
+    a = a.replace(' ', ',')    
+
+    try: #used try so that if user pressed other than the given key error will not be shown
+        if keyboard.is_pressed('q'):
+            current_state = "1"
+        elif keyboard.is_pressed('w'):
+            current_state = "0"
+    except:
+        pass
+    a = a + ("," + current_state)
+    print(a)
+    f.write(a + "\n")
+    sleep(0.1)
     
 ser.close()
-
-# code delay function.
-# code timer !
-
+f.close()
