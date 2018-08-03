@@ -60,4 +60,5 @@ utime.sleep(1)
 count = 1
 while (1 == 1):
     print(count, ":", readValues())
+    count += 1
     utime.sleep(1)
