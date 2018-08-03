@@ -1,82 +1,66 @@
 # IMPORTS
-from machine import Pin, I2C
+import network
+import usocket as _socket
+import ussl as ssl
+import ubinascii
 import utime
-import mag3110
+import ujson
+import urequests
 
-# CONSTANTS
-i2c = I2C(scl=Pin(mag3110.SCL_PIN), sda=Pin(mag3110.SDA_PIN), freq=mag3110.I2C_FREQ)
+ASPACE_AUTH_KEY = '***REMOVED***'
 
 def printDivider():
     print('------------------------------------------------------------------------------------')
 
-def readI2cAddress(registerAddress, bytes = 1, deviceAddress = mag3110.MAG_ADDRESS):
-    data = bytearray(bytes)
-    i2c.readfrom_mem_into(deviceAddress, registerAddress, data)
-    return data
+def setupNetwork():
+    nic = network.WLAN(network.STA_IF)
+    nic.active(True)
+    if not nic.isconnected():
+        nic.connect('bcenter')
+        print("Waiting for connection...")
+        while not nic.isconnected():
+            utime.sleep(1)
+    return nic.ifconfig()
 
-def writeI2cAddress(registerAddress, writeContents, deviceAddress = mag3110.MAG_ADDRESS):
-    writeData = bytearray(1)
-    writeData[0] = writeContents
-    i2c.writeto_mem(deviceAddress, registerAddress, writeData)
+def httpGetTest():
+    s = _socket.socket()
 
-def getCurrentMode():
-    return mag3110.sys_mode_descriptions[readI2cAddress(mag3110.SYSMOD)[0]]
+    ai = _socket.getaddrinfo("api.trya.space", 443)
+    # print("Address infos:", ai)
+    addr = ai[0][-1]
 
-def reset():
-    writeI2cAddress(mag3110.CTRL_REG1, 0)
+    # print("Connect address:", addr)
+    s.connect(addr)
 
-def setOffset(msbAddress, lsbAddress, offset):
-    offset = offset << 1
-    writeI2cAddress(msbAddress, int((offset >> 8) & 0xFF))
-    utime.sleep_us(15)
-    writeI2cAddress(lsbAddress, int(offset & 0xFF))
+    s = ssl.wrap_socket(s)
+    print(s)
+
+    s.write(b"GET /v1 HTTP/1.0\r\n\r\n")
+    res = s.read(4096)
+    jsonRes = ujson.loads(res)
+    print(jsonRes)
+    s.close()
+
+def requestTest():
+    response = urequests.get('https://api.trya.space/v1')
+    return response.json()
+
+def updateSensorStatus(spotID, newOccupancyStatus, authKey = ASPACE_AUTH_KEY):
+    response = urequests.post('https://api.trya.space/v1/parking/update_status?spot_id=' + str(spotID) + '&occupied=' + str(newOccupancyStatus) + '&auth_key=' + str(authKey))
+    return response.json()
 
 # TESTING DEVICE
-printDivider()
-
-devices = i2c.scan()
-print("MAG PRESENT:              ", devices[0] == mag3110.MAG_ADDRESS)
-data = readI2cAddress(mag3110.WHO_AM_I)[0]
-print("I2C CORRECTLY IDENTIFIED: ", data == mag3110.WHO_AM_I_RESULT)
-
-# INITIALIZATION
-writeI2cAddress(mag3110.CTRL_REG1, 0)
-utime.sleep(1)
-
-print("DEFAULT MODE:", getCurrentMode())
-
-writeI2cAddress(mag3110.CTRL_REG1, 1)
-utime.sleep_us(500)
-writeI2cAddress(mag3110.CTRL_REG2, 0x80)
-
-print("NEW MODE:", getCurrentMode())
-
-utime.sleep_us(500)
-setOffset(mag3110.OFF_X_MSB, mag3110.OFF_X_LSB, 0)
-utime.sleep_us(500)
-setOffset(mag3110.OFF_Y_MSB, mag3110.OFF_Y_LSB, 0)
-utime.sleep_us(500)
-setOffset(mag3110.OFF_Z_MSB, mag3110.OFF_Z_LSB, 0)
-utime.sleep_us(500)
-writeI2cAddress(mag3110.CTRL_REG1, ((readI2cAddress(mag3110.CTRL_REG1)[0]) | mag3110.MAG3110_ACTIVE_MODE))
-utime.sleep(1)
-
-msb = readI2cAddress(mag3110.OUT_X_MSB)[0]
-lsb = readI2cAddress(mag3110.OUT_X_LSB)[0]
-msbBin = bin(msb)
-lsbBin = bin(lsb)
-print("X BIN", msbBin, lsbBin)
-# print("MSB:\t\t", msb)
-# print("MSB BIN:\t", msbBin)
-utime.sleep_us(500)
-# print("LSB:\t\t", lsb)
-# print("LSB BIN:\t", lsbBin)
-# print(bin(readI2cAddress(mag3110.CTRL_REG1)[0]))
-utime.sleep_us(500)
-# print(bin(readI2cAddress(mag3110.CTRL_REG2)[0]))
-
-a  = msb << 8	# MSB
-final = a | lsb # LSB
-rawVal = (msb * 256) + lsb
-print("NO BITWISE X", rawVal)
-print("W/ BITWISE X:", int(final))
+# print("NETWORK CONFIG            :", setupNetwork())
+setupNetwork()
+# print("MAC ADDRESS               :", ubinascii.hexlify(network.WLAN().config('mac'),':').decode())
+# print("\nWIFI TEST:")
+responseData = requestTest()
+print("RESPONSE_INFO:",responseData['res_info']['code_info'])
+print("RESPONSE_CODE:",responseData['res_info']['code'])
+updateSpotResponse = updateSensorStatus(841, 'T')
+utime.sleep(5)
+updateSpotResponse = updateSensorStatus(841, 'F')
+utime.sleep(5)
+updateSpotResponse = updateSensorStatus(841, 'N')
+# httpGetTest()
+# aspacefun.continueWithDataCapture(i2cDev)

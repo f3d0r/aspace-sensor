@@ -1,32 +1,32 @@
 #########################################
 ## I2C Device Register/Address         ##
 #########################################
-SCL_PIN = 5
-SDA_PIN = 4
-I2C_FREQ = 400000
+SCL_PIN         = 5
+SDA_PIN         = 4
+I2C_FREQ        = 400000
 
 #########################################
 ## MAG3110 Magnetometer Registers      ##
 #########################################
-MAG_ADDRESS = 0x0E
-DR_STATUS   = 0x00
-OUT_X_MSB   = 0x01
-OUT_X_LSB   = 0x02
-OUT_Y_MSB   = 0x03
-OUT_Y_LSB   = 0x04
-OUT_Z_MSB   = 0x05
-OUT_Z_LSB   = 0x06
-WHO_AM_I    = 0x07
-SYSMOD      = 0x08
-OFF_X_MSB   = 0x09
-OFF_X_LSB   = 0x0A
-OFF_Y_MSB   = 0x0B
-OFF_Y_LSB   = 0x0C
-OFF_Z_MSB   = 0x0D
-OFF_Z_LSB   = 0x0E
-DIE_TEMP    = 0x0F
-CTRL_REG1   = 0x10
-CTRL_REG2   = 0x11
+MAG_ADDRESS     = 0x0E
+DR_STATUS       = 0x00
+OUT_X_MSB       = 0x01
+OUT_X_LSB       = 0x02
+OUT_Y_MSB       = 0x03
+OUT_Y_LSB       = 0x04
+OUT_Z_MSB       = 0x05
+OUT_Z_LSB       = 0x06
+WHO_AM_I        = 0x07
+SYSMOD          = 0x08
+OFF_X_MSB       = 0x09
+OFF_X_LSB       = 0x0A
+OFF_Y_MSB       = 0x0B
+OFF_Y_LSB       = 0x0C
+OFF_Z_MSB       = 0x0D
+OFF_Z_LSB       = 0x0E
+DIE_TEMP        = 0x0F
+CTRL_REG1       = 0x10
+CTRL_REG2       = 0x11
 
 #########################################
 ## MAG3110 WHO_AM_I Response           ##
@@ -95,9 +95,9 @@ MAG3110_SYSMOD_ACTIVE		= 0x02
 #########################################
 ## MAG3110 Axis Indices                ##
 #########################################
-MAG3110_X_AXIS = 1
-MAG3110_Y_AXIS = 3
-MAG3110_Z_AXIS = 5
+MAG3110_X_AXIS              = 1
+MAG3110_Y_AXIS              = 3
+MAG3110_Z_AXIS              = 5
 
 #########################################
 ## MAG3110 SYSMOD Descriptions         ##
