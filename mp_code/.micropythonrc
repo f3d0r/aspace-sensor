@@ -14,7 +14,8 @@
       ".json"
     ],
     "directories": [
-      ".vscode"
+      ".vscode",
+      "misc"
     ]
   },
   "tools": {

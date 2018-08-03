@@ -1,6 +1,5 @@
 # IMPORTS
 from machine import Pin, I2C
-import ustruct
 import utime
 import mag3110
 
@@ -32,19 +31,24 @@ def setOffset(msbAddress, lsbAddress, offset):
     utime.sleep_us(15)
     writeI2cAddress(lsbAddress, int(offset & 0xFF))
 
-def readValues(deviceAddress = mag3110.MAG_ADDRESS):
-    data = readI2cAddress(mag3110.OUT_X_MSB, 6)
-    return [ustruct.unpack_from("<h", data, 0)[0], ustruct.unpack_from("<h", data, 2)[0], ustruct.unpack_from("<h", data, 4)[0]]
-
 # TESTING DEVICE
-print("MAG PRESENT:              ", i2c.scan()[0] == mag3110.MAG_ADDRESS)
-print("I2C CORRECTLY IDENTIFIED: ",  readI2cAddress(mag3110.WHO_AM_I)[0] == mag3110.WHO_AM_I_RESULT)
+printDivider()
+
+devices = i2c.scan()
+print("MAG PRESENT:              ", devices[0] == mag3110.MAG_ADDRESS)
+data = readI2cAddress(mag3110.WHO_AM_I)[0]
+print("I2C CORRECTLY IDENTIFIED: ", data == mag3110.WHO_AM_I_RESULT)
 
 # INITIALIZATION
+writeI2cAddress(mag3110.CTRL_REG1, 0)
+utime.sleep(1)
+
 print("DEFAULT MODE:", getCurrentMode())
-writeI2cAddress(mag3110.CTRL_REG1, 0x00)
+
+writeI2cAddress(mag3110.CTRL_REG1, 1)
 utime.sleep_us(500)
 writeI2cAddress(mag3110.CTRL_REG2, 0x80)
+
 print("NEW MODE:", getCurrentMode())
 
 utime.sleep_us(500)
@@ -57,7 +61,22 @@ utime.sleep_us(500)
 writeI2cAddress(mag3110.CTRL_REG1, ((readI2cAddress(mag3110.CTRL_REG1)[0]) | mag3110.MAG3110_ACTIVE_MODE))
 utime.sleep(1)
 
-count = 1
-while (1 == 1):
-    print(count, ":", readValues())
-    utime.sleep(1)
+msb = readI2cAddress(mag3110.OUT_X_MSB)[0]
+lsb = readI2cAddress(mag3110.OUT_X_LSB)[0]
+msbBin = bin(msb)
+lsbBin = bin(lsb)
+print("X BIN", msbBin, lsbBin)
+# print("MSB:\t\t", msb)
+# print("MSB BIN:\t", msbBin)
+utime.sleep_us(500)
+# print("LSB:\t\t", lsb)
+# print("LSB BIN:\t", lsbBin)
+# print(bin(readI2cAddress(mag3110.CTRL_REG1)[0]))
+utime.sleep_us(500)
+# print(bin(readI2cAddress(mag3110.CTRL_REG2)[0]))
+
+a  = msb << 8	# MSB
+final = a | lsb # LSB
+rawVal = (msb * 256) + lsb
+print("NO BITWISE X", rawVal)
+print("W/ BITWISE X:", int(final))
