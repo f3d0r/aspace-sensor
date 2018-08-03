@@ -31,9 +31,9 @@ def updateSensorStatus(spotID, newOccupancyStatus, authKey = ASPACE_AUTH_KEY):
     return response.json()
 
 def updateSpotStatusTest():
-    updateSpotResponse = updateSensorStatus(841, 'T')
+    updateSensorStatus(841, 'T')
     utime.sleep(2)
-    updateSpotResponse = updateSensorStatus(841, 'N')
+    updateSensorStatus(841, 'N')
 
 # TESTING DEVICE
 print("NETWORK CONFIG            :", setupNetwork())
