@@ -1,1 +1,3 @@
-aspace, Inc. Parking Sensor Code (using MicroPython)
+# aspace-sensor
+
+aspace, Inc. - Sensor
